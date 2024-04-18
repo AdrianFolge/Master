@@ -2,32 +2,12 @@
 from deep_translator import GoogleTranslator
 from langchain.agents import AgentExecutor, create_react_agent
 from datasets import load_dataset
-from langchain_text_splitters import CharacterTextSplitter
-from langchain_community.document_loaders import UnstructuredFileLoader, DirectoryLoader
-from langchain_community.vectorstores import FAISS
-import re
 from langchain.tools.retriever import create_retriever_tool
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_text_splitters import CharacterTextSplitter
-from langchain_community.document_loaders import UnstructuredFileLoader, DirectoryLoader
-from langchain_community.vectorstores import FAISS
+from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 
-def react_rag(instances, file_path):   
+def react_rag(instances, file_path, databases):   
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]") 
-    loader = DirectoryLoader('../data/', glob="**/*.pdf", show_progress=True, loader_cls=UnstructuredFileLoader)
-    documents = loader.load()
-    text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=0)
-    databases_FAISS = {}
-    for doc in documents:
-        source = doc.metadata['source']
-        match = re.search(r'\/([A-Za-z_]+)\.pdf', source)
-        if match:
-            municipality_name = match.group(1)
-        docs = text_splitter.split_documents([doc])
-        embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-        db = FAISS.from_documents(docs, embeddings)
-        databases_FAISS[municipality_name] = db
     ## Prompt for ReACT few shots
     # Get the prompt to use - you can modify this!
     llm = ChatOpenAI(model="gpt-3.5-turbo-1106")
@@ -71,7 +51,7 @@ def react_rag(instances, file_path):
         answer_and_similar_docs = {}
         query = references["spørsmål"][num]
         kommunenavn = references["kommunenavn"][num]
-        db = databases_FAISS[kommunenavn]
+        db = databases[kommunenavn]
         found_docs = db.similarity_search(query)
         all_page_contents = []
         # Iterate over each document in found_docs
@@ -100,29 +80,8 @@ def react_rag(instances, file_path):
         list_of_answers_react.append(answer_and_similar_docs["svar"])
     return list_of_answers_react
 
-def react_rag_translated(instances, file_path): 
-    loader = DirectoryLoader('../data/', glob="**/*.pdf", show_progress=True, loader_cls=UnstructuredFileLoader)
+def react_rag_translated(instances, file_path, databases): 
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]")
-    documents = loader.load()
-    text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=0)
-    databases = {}
-    for doc in documents:
-        source = doc.metadata['source']
-        match = re.search(r'\/([A-Za-z_]+)\.pdf', source)
-        if match:
-            municipality_name = match.group(1)
-        docs = text_splitter.split_documents([doc])
-        for document in docs:
-            page_content = document.page_content
-            translated_content = GoogleTranslator(source='no', target='en').translate(text=page_content)
-            document.page_content = translated_content
-        for index, doc in enumerate(docs):
-            if isinstance(doc.page_content, type(None)):
-                docs[index].page_content = ""
-        embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-        db = FAISS.from_documents(docs, embeddings)
-        databases[municipality_name] = db
-
     llm = ChatOpenAI(model="gpt-3.5-turbo-1106")
     prompt = PromptTemplate(template="""Answer the following questions as best you can. You have access to the following tools:
 
