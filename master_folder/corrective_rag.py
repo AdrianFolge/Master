@@ -21,28 +21,8 @@ from langgraph.graph import END, StateGraph
 from langchain.prompts import PromptTemplate
 import pprint
 
-def corrective_rag_translated(instances, file_path):
+def corrective_rag_translated(instances, file_path, databases):
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]")
-    loader = DirectoryLoader('../data', glob="**/*.pdf", show_progress=True, loader_cls=UnstructuredFileLoader)
-    documents = loader.load()
-    text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=0)
-    databases = {}
-    for doc in documents:
-        source = doc.metadata['source']
-        match = re.search(r'\/([A-Za-z_]+)\.pdf', source)
-        if match:
-            municipality_name = match.group(1)
-        docs = text_splitter.split_documents([doc])
-        for document in docs:
-            page_content = document.page_content
-            translated_content = GoogleTranslator(source='no', target='en').translate(text=page_content)
-            document.page_content = translated_content
-        for index, doc in enumerate(docs):
-            if isinstance(doc.page_content, type(None)):
-                docs[index].page_content = ""
-        embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-        db = FAISS.from_documents(docs, embeddings)
-        databases[municipality_name] = db
 
     class GraphState(TypedDict):
         """

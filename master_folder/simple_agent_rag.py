@@ -1,8 +1,6 @@
 from deep_translator import GoogleTranslator
 from datasets import load_dataset
 from langchain.tools.retriever import create_retriever_tool
-from datasets import load_dataset
-from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain_openai import ChatOpenAI
 from langchain import hub

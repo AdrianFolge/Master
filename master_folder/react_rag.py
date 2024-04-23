@@ -46,6 +46,7 @@ def react_rag(instances, file_path, databases):
     """, input_variables=["tool_names", "tools", "input", "agent_scratchpad"])
 
     ## Running ReACT few shots
+    list_of_context = []
     list_of_answers_react = []
     for num in range(instances):
         answer_and_similar_docs = {}
@@ -78,7 +79,8 @@ def react_rag(instances, file_path, databases):
         answer_and_similar_docs["svar"] = answer["output"]
         answer_and_similar_docs["kontekst"] = big_chunk_of_text
         list_of_answers_react.append(answer_and_similar_docs["svar"])
-    return list_of_answers_react
+        list_of_context.append(answer_and_similar_docs["kontekst"])
+    return list_of_answers_react, list_of_context
 
 def react_rag_translated(instances, file_path, databases): 
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]")
