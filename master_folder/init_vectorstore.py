@@ -46,7 +46,6 @@ def init_semantic_vectorstore(translate=False):
         if match:
             municipality_name = match.group(1)
         docs = text_splitter.split_documents([doc])
-        print(docs)
         for document in docs:
             if translate:
                 page_content = document.page_content

@@ -56,7 +56,7 @@ def simple_agent_rag_translated(instances, file_path, databases):
         tool = create_retriever_tool(
             retriever,
             "search_state_of_union",
-            "Searches and returns excerpts from the 2022 State of the Union.",
+            "Searches and returns excerpts from the 2022 State of the Union."
         )
         tools = [tool]
 
@@ -68,6 +68,7 @@ def simple_agent_rag_translated(instances, file_path, databases):
                 "input": f"{question}"
             }
         )
+        print(result)
         translated_answer = GoogleTranslator(source='en', target='no').translate(text=result["output"])
         list_of_answers_with_simple_agent.append(translated_answer)
     return list_of_answers_with_simple_agent

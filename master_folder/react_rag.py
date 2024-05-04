@@ -74,8 +74,9 @@ def react_rag(instances, file_path, databases):
         agent = create_react_agent(llm, tools, prompt)
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
         answer = agent_executor.invoke({"input": {query}})
-        print("########### HER ER ANSWER")
-        print(answer)
+
+
+
         answer_and_similar_docs["svar"] = answer["output"]
         answer_and_similar_docs["kontekst"] = big_chunk_of_text
         list_of_answers_react.append(answer_and_similar_docs["svar"])
@@ -121,6 +122,7 @@ def react_rag_translated(instances, file_path, databases):
 
     ## Running ReACT few shots
     list_of_answers_react = []
+    list_of_contexts_react = []
     for num in range(instances):
         answer_and_similar_docs = {}
         query = references["spørsmål"][num]
@@ -147,10 +149,12 @@ def react_rag_translated(instances, file_path, databases):
         agent = create_react_agent(llm, tools, prompt)
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
         answer = agent_executor.invoke({"input": {query}})
-        print("########### HER ER ANSWER")
-        print(answer)
+
+       
         answer_and_similar_docs["svar"] = answer["output"]
         answer_and_similar_docs["kontekst"] = big_chunk_of_text
         translated_answer = GoogleTranslator(source='en', target='no').translate(text=answer_and_similar_docs["svar"])
+        translated_context = GoogleTranslator(source='en', target='no').translate(text=answer_and_similar_docs["kontekst"])
         list_of_answers_react.append(translated_answer)
-    return list_of_answers_react
+        list_of_contexts_react.append(translated_context)
+    return list_of_answers_react, list_of_contexts_react

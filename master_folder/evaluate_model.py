@@ -1,8 +1,6 @@
 ## Load packages
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from ragas.metrics import (answer_relevancy, faithfulness, context_recall, context_precision)
-from ragas import evaluate
 
 def evaluate_model(preds, refs, instances):
     ja_nei_liste = []
@@ -56,15 +54,3 @@ def evaluate_model(preds, refs, instances):
     print("Count of 'no':", count_of_no)
     percentage_of_yes = count_of_yes/(count_of_yes+count_of_no)
     return percentage_of_yes
-
-def ragas_eval(eval_dataset):
-    result = evaluate(
-        eval_dataset,
-        metrics =[
-            context_precision,
-            faithfulness,
-            answer_relevancy,
-            context_recall
-        ],
-    )
-    return result
