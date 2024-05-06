@@ -4,6 +4,7 @@ from langchain_community.document_loaders import UnstructuredFileLoader, Directo
 from langchain_community.vectorstores import FAISS
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_openai.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Qdrant
 
 def init_vectorstore(embeddings, text_splitter, translate=False):
     loader = DirectoryLoader('../data', glob="**/*.pdf", show_progress=True, loader_cls=UnstructuredFileLoader)
@@ -29,7 +30,7 @@ def init_vectorstore(embeddings, text_splitter, translate=False):
             if isinstance(doc.page_content, type(None)):
                 docs[index].page_content = ""
 
-        db = FAISS.from_documents(docs, embeddings)
+        db = Qdrant.from_documents(docs, embeddings,location=":memory:", collection_name="my_documents")
         databases[municipality_name] = db
     return databases
 
