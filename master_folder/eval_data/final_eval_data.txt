@@ -1,0 +1,77 @@
+Answer relevancy scores:
+0.9340284469866528
+0.9195127208798756
+0.8050456567926931
+0.8561241105697531
+0.8542378710617794
+0.5955155838969399
+0.8884675366446135
+0.6689608142708204
+0.9433920061894425
+
+Average ragas scores:
+0.9132315660879925
+0.9357115135303024
+0.879978839843362
+0.938697694285105
+0.9379969677411948
+0
+0.9338962734237662
+0.8477007516175229
+0.976244826919186
+
+Correct not correct scores:
+0.55
+0.6
+0.45
+0.44
+0.4
+0.01
+0.32
+0.43
+0.6
+Ragas ensemble scores:
+{'context_precision': 1.0000, 'faithfulness': 0.9544, 'answer_relevancy': 0.9542, 'context_recall': 0.9500}
+{'context_precision': 1.0000, 'faithfulness': 0.9752, 'answer_relevancy': 0.9456, 'context_recall': 0.9867}
+{'context_precision': 1.0000, 'faithfulness': 0.9867, 'answer_relevancy': 0.9374, 'context_recall': 1.0000}
+{'context_precision': 1.0000, 'faithfulness': 1.0000, 'answer_relevancy': 0.9365, 'context_recall': 0.9933}
+Ragas corrective scores:
+{'context_precision': 0.9600, 'faithfulness': 0.8146, 'answer_relevancy': 0.9534, 'context_recall': 0.9300}
+{'context_precision': 0.8800, 'faithfulness': 0.8580, 'answer_relevancy': 0.9457, 'context_recall': 0.9200}
+{'context_precision': 1.0000, 'faithfulness': 0.8087, 'answer_relevancy': 0.9360, 'context_recall': 0.9600}
+{'context_precision': 0.9600, 'faithfulness': 0.8243, 'answer_relevancy': 0.9011, 'context_recall': 0.9600}
+Ragas simple agent translated scores:
+{'context_precision': 0.8800, 'faithfulness': 0.9792, 'answer_relevancy': 0.8868, 'context_recall': 0.9714}
+{'context_precision': 0.8800, 'faithfulness': 1.0000, 'answer_relevancy': 0.8047, 'context_recall': 0.8400}
+{'context_precision': 0.8000, 'faithfulness': 0.9474, 'answer_relevancy': 0.7521, 'context_recall': 0.9800}
+{'context_precision': 0.8400, 'faithfulness': 0.9015, 'answer_relevancy': 0.7766, 'context_recall': 0.8400}
+Ragas simple agent scores:
+{'context_precision': 0.9200, 'faithfulness': 1.0000, 'answer_relevancy': 0.9181, 'context_recall': 0.9000}
+{'context_precision': 0.9200, 'faithfulness': 0.9600, 'answer_relevancy': 0.9334, 'context_recall': 0.9200}
+{'context_precision': 0.9200, 'faithfulness': 0.9600, 'answer_relevancy': 0.9044, 'context_recall': 0.9600}
+{'context_precision': 0.9200, 'faithfulness': 0.9600, 'answer_relevancy': 0.9223, 'context_recall': 0.9533}
+Ragas naive rag scores:
+{'context_precision': 0.9200, 'faithfulness': 0.9573, 'answer_relevancy': 0.8580, 'context_recall': 0.9200}
+{'context_precision': 1.0000, 'faithfulness': 0.9600, 'answer_relevancy': 0.8603, 'context_recall': 1.0000}
+{'context_precision': 0.9600, 'faithfulness': 0.9573, 'answer_relevancy': 0.8340, 'context_recall': 0.9600}
+{'context_precision': 0.9600, 'faithfulness': 1.0000, 'answer_relevancy': 0.8722, 'context_recall': 1.0000}
+Ragas naive rag translated scores:
+{'context_precision': 0.9600, 'faithfulness': 0.9853, 'answer_relevancy': 0.8451, 'context_recall': 0.8900}
+{'context_precision': 0.9600, 'faithfulness': 0.9520, 'answer_relevancy': 0.8621, 'context_recall': 1.0000}
+{'context_precision': 1.0000, 'faithfulness': 0.9637, 'answer_relevancy': 0.8347, 'context_recall': 0.9600}
+{'context_precision': 0.9600, 'faithfulness': 1.0000, 'answer_relevancy': 0.8750, 'context_recall': 0.9600}
+Ragas react rag scores:
+{'context_precision': 1.0000, 'faithfulness': nan, 'answer_relevancy': 0.5884, 'context_recall': 0.9500}
+{'context_precision': 1.0000, 'faithfulness': nan, 'answer_relevancy': 0.6812, 'context_recall': 0.9733}
+{'context_precision': 1.0000, 'faithfulness': nan, 'answer_relevancy': 0.5375, 'context_recall': 1.0000}
+{'context_precision': 1.0000, 'faithfulness': 1.0000, 'answer_relevancy': 0.5750, 'context_recall': 0.9800}
+Ragas react rag translated scores:
+{'context_precision': 1.0000, 'faithfulness': 0.8485, 'answer_relevancy': 0.9454, 'context_recall': 0.9500}
+{'context_precision': 1.0000, 'faithfulness': 0.7719, 'answer_relevancy': 0.8015, 'context_recall': 0.9867}
+{'context_precision': 1.0000, 'faithfulness': 0.8889, 'answer_relevancy': 0.8962, 'context_recall': 0.9867}
+{'context_precision': 1.0000, 'faithfulness': 0.9625, 'answer_relevancy': 0.9108, 'context_recall': 0.9933}
+Ragas semantic scores:
+{'context_precision': 0.8400, 'faithfulness': 0.9233, 'answer_relevancy': 0.7777, 'context_recall': 0.9500}
+{'context_precision': 0.9200, 'faithfulness': 0.9688, 'answer_relevancy': 0.6370, 'context_recall': 0.9200}
+{'context_precision': 0.8000, 'faithfulness': 0.9643, 'answer_relevancy': 0.6463, 'context_recall': 0.9200}
+{'context_precision': 0.9200, 'faithfulness': 0.8211, 'answer_relevancy': 0.6148, 'context_recall': 0.9400}

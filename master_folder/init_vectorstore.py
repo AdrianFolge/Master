@@ -29,8 +29,10 @@ def init_vectorstore(embeddings, text_splitter, translate=False):
         for index, doc in enumerate(docs):
             if isinstance(doc.page_content, type(None)):
                 docs[index].page_content = ""
-
-        db = Qdrant.from_documents(docs, embeddings,location=":memory:", collection_name="my_documents")
+        if translate:
+            db = Qdrant.from_documents(docs, embeddings, location=":memory:", collection_name="my_documents")
+        else:
+            db = FAISS.from_documents(docs, embeddings)
         databases[municipality_name] = db
     return databases
 

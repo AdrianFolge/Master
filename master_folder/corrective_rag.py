@@ -2,8 +2,6 @@ from datasets import load_dataset
 from langchain import hub
 from langchain.prompts import PromptTemplate
 from deep_translator import GoogleTranslator
-from datasets import load_dataset
-from langchain_openai import ChatOpenAI
 from typing import Dict, TypedDict
 from langchain import hub
 from langchain_core.output_parsers import JsonOutputParser
@@ -13,7 +11,7 @@ from langgraph.graph import END, StateGraph
 from langchain.prompts import PromptTemplate
 import pprint
 
-def corrective_rag_translated(instances, file_path, databases):
+def corrective_rag_translated(instances, file_path, databases, llm):
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]")
     class GraphState(TypedDict):
         """
@@ -62,8 +60,6 @@ def corrective_rag_translated(instances, file_path, databases):
         transform_attempts = state_dict["transform_attempts"]
         # Prompt
         prompt = hub.pull("rlm/rag-prompt")
-        # LLM
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
         # Chain
         rag_chain = prompt | llm | StrOutputParser()
         # Run
@@ -87,8 +83,6 @@ def corrective_rag_translated(instances, file_path, databases):
         question = state_dict["question"]
         documents = state_dict["documents"]
         transform_attempts = state_dict["transform_attempts"]
-        # LLM
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
         prompt = PromptTemplate(
             template="""You are an evaluator assessing the relevance of a retrieved document to a user question.
                     Here is the retrieved document:
@@ -158,9 +152,6 @@ def corrective_rag_translated(instances, file_path, databases):
     Provide an improved question without any introduction, just respond with the updated question:  """,
             input_variables=["question"],
         )
-
-        # LLM
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
 
         # Prompt
         chain = prompt | llm | StrOutputParser()
@@ -270,7 +261,7 @@ def corrective_rag_translated(instances, file_path, databases):
         list_of_answers.append(translated_answer)
     return list_of_answers, list_of_contexts
 
-def corrective_rag(instances, file_path, databases):
+def corrective_rag(instances, file_path, databases, llm):
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]")
     class GraphState(TypedDict):
         """
@@ -319,8 +310,6 @@ def corrective_rag(instances, file_path, databases):
         transform_attempts = state_dict["transform_attempts"]
         # Prompt
         prompt = hub.pull("rlm/rag-prompt")
-        # LLM
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
         # Chain
         rag_chain = prompt | llm | StrOutputParser()
         # Run
@@ -344,8 +333,6 @@ def corrective_rag(instances, file_path, databases):
         question = state_dict["question"]
         documents = state_dict["documents"]
         transform_attempts = state_dict["transform_attempts"]
-        # LLM
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
         prompt = PromptTemplate(
             template="""Du er en vurderer som vurderer relevansen til et hentet dokument for et brukerspørsmål. \n
             Her er det hentede dokumentet: \n\n {context} \n\n
@@ -409,10 +396,6 @@ def corrective_rag(instances, file_path, databases):
         Gi et forbedret spørsmål uten noen introduksjon, bare svar med det oppdaterte spørsmålet:  """,
             input_variables=["question"],
         )
-
-        # LLM
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
-
         # Prompt
         chain = prompt | llm | StrOutputParser()
         better_question = chain.invoke({"question": question})

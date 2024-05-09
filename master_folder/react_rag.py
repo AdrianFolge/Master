@@ -3,46 +3,42 @@ from deep_translator import GoogleTranslator
 from langchain.agents import AgentExecutor, create_react_agent
 from datasets import load_dataset
 from langchain.tools.retriever import create_retriever_tool
-from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 
-def react_rag(instances, file_path, databases):   
+def react_rag(instances, file_path, databases, llm):   
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]") 
-    ## Prompt for ReACT few shots
-    # Get the prompt to use - you can modify this!
-    llm = ChatOpenAI(model="gpt-3.5-turbo-1106")
-    prompt = PromptTemplate(template="""Answer the following questions as best you can. You have access to the following tools:
+    prompt = PromptTemplate(template="""Svar på det følgende spørsmålet så godt du kan. Du kan bruke følgende verktøy:
 
     {tools}
 
-    Use the following format:
+    Bruk følgende format:
 
-    Question: the input question you must answer
-    Thought: you should always think about what to do
-    Action: the action to take, should be one of [{tool_names}]
-    Action Input: the input to the action
-    Observation: the result of the action
-    ... (this Thought/Action/Action Input/Observation can repeat N times)
-    Thought: I now know the final answer
-    Final Answer: the final answer to the original input question. Answer in Norwegian
+    Spørsmål: Spørsmålet du må besvare
+    Tanke: Du burde alltid tenke på det du gjør
+    Handling: handlingen å utføre, skal være en av [{tool_names}]
+    Handling Inndata: inndata til handlingen
+    Observasjon: resultatet av handlingen
+    ... (denne Tanke/Handling/Handling Inndata/Observasjon kan gjenta seg N ganger)
+    Tanke: Jeg vet nå det endelige svaret
+    Endelig Svar: det endelige svaret på det opprinnelige inndata spørsmålet. Svar på norsk.
 
-    Few-shot examples:
-    Question: Hva er datoen for vedtaket av Kommunedelplan for sentrum av bystyret?
-    Final Answer: Datoen for vedtaket av Kommunedelplan for sentrum av bystyret er 26.8.2021.
+    Few-shot eksempler:
+    Spørsmål: Hva er datoen for vedtaket av Kommunedelplan for sentrum av bystyret?
+    Endelig Svar: Datoen for vedtaket av Kommunedelplan for sentrum av bystyret er 26.8.2021.
 
-    Question: Hvor kan man finne felles bestemmelser i dokumentet om Kristiansund?
-    Final Answer: Felles bestemmelser kan finnes på side 3 i dokumentet om Kristiansund.
+    Spørsmål: Hvor kan man finne felles bestemmelser i dokumentet om Kristiansund?
+    Endelig Svar: Felles bestemmelser kan finnes på side 3 i dokumentet om Kristiansund.
 
-    Question: Hva er hovedtemaet for avsnitt 3.6 i dokumentet?
-    Final Answer: Hovedtemaet for avsnitt 3.6 i dokumentet er offentlige områder.
+    Spørsmål: Hva er hovedtemaet for avsnitt 3.6 i dokumentet?
+    Endelig Svar: Hovedtemaet for avsnitt 3.6 i dokumentet er offentlige områder.
 
-    Question: Hva er emnet for kapittel 4 i dokumentet fra Kristiansund?
-    Final Answer: Emnet for kapittel 4 i dokumentet fra Kristiansund er bebyggelse og anlegg.
+    Spørsmål: Hva er emnet for kapittel 4 i dokumentet fra Kristiansund?
+    Endelig Svar: Emnet for kapittel 4 i dokumentet fra Kristiansund er bebyggelse og anlegg.
                             
-    Begin!
+    Begynn!
 
-    Question: {input}
-    Thought: {agent_scratchpad} 
+    Spørsmål: {input}
+    Tanke: {agent_scratchpad} 
     """, input_variables=["tool_names", "tools", "input", "agent_scratchpad"])
 
     ## Running ReACT few shots
@@ -83,9 +79,8 @@ def react_rag(instances, file_path, databases):
         list_of_context.append(answer_and_similar_docs["kontekst"])
     return list_of_answers_react, list_of_context
 
-def react_rag_translated(instances, file_path, databases): 
+def react_rag_translated(instances, file_path, databases, llm): 
     references = load_dataset('csv', data_files={file_path}, split=f"train[:{instances}]")
-    llm = ChatOpenAI(model="gpt-3.5-turbo-1106")
     prompt = PromptTemplate(template="""Answer the following questions as best you can. You have access to the following tools:
 
     {tools}
@@ -102,17 +97,18 @@ def react_rag_translated(instances, file_path, databases):
     Final Answer: the final answer to the original input question. Answer in Norwegian
 
     Few-shot examples:
-    Question: Hva er datoen for vedtaket av Kommunedelplan for sentrum av bystyret?
-    Final Answer: Datoen for vedtaket av Kommunedelplan for sentrum av bystyret er 26.8.2021.
 
-    Question: Hvor kan man finne felles bestemmelser i dokumentet om Kristiansund?
-    Final Answer: Felles bestemmelser kan finnes på side 3 i dokumentet om Kristiansund.
+    Question: What is the date of the decision on the Municipal Plan for the city center by the city council?
+    Final Answer: The date of the decision on the Municipal Plan for the city center by the city council is 26.8.2021.
 
-    Question: Hva er hovedtemaet for avsnitt 3.6 i dokumentet?
-    Final Answer: Hovedtemaet for avsnitt 3.6 i dokumentet er offentlige områder.
+    Question: Where can one find common provisions in the document about Kristiansund?
+    Final Answer: Common provisions can be found on page 3 in the document about Kristiansund.
 
-    Question: Hva er emnet for kapittel 4 i dokumentet fra Kristiansund?
-    Final Answer: Emnet for kapittel 4 i dokumentet fra Kristiansund er bebyggelse og anlegg.
+    Question: What is the main topic of section 3.6 in the document?
+    Final Answer: The main topic of section 3.6 in the document is public areas.
+
+    Question: What is the subject of chapter 4 in the document from Kristiansund?
+    Final Answer: The subject of chapter 4 in the document from Kristiansund is buildings and facilities.
                             
     Begin!
 
@@ -128,7 +124,8 @@ def react_rag_translated(instances, file_path, databases):
         query = references["spørsmål"][num]
         kommunenavn = references["kommunenavn"][num]
         db = databases[kommunenavn]
-        found_docs = db.similarity_search(query)
+        translated_query = GoogleTranslator(source='no', target='en').translate(text=query)
+        found_docs = db.similarity_search(translated_query)
         all_page_contents = []
         # Iterate over each document in found_docs
         for doc in found_docs:
@@ -148,7 +145,7 @@ def react_rag_translated(instances, file_path, databases):
         tools = [tool]
         agent = create_react_agent(llm, tools, prompt)
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
-        answer = agent_executor.invoke({"input": {query}})
+        answer = agent_executor.invoke({"input": {translated_query}})
 
        
         answer_and_similar_docs["svar"] = answer["output"]
