@@ -94,7 +94,7 @@ def react_rag_translated(instances, file_path, databases, llm):
     Observation: the result of the action
     ... (this Thought/Action/Action Input/Observation can repeat N times)
     Thought: I now know the final answer
-    Final Answer: the final answer to the original input question. Answer in Norwegian
+    Final Answer: the final answer to the original input question.
 
     Few-shot examples:
 
