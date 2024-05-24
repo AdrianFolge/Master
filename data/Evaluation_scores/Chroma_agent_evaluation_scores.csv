@@ -1,8 +1,0 @@
-Metric,Score
-BLEU Score,"{'bleu': 0.19201080164848797, 'precisions': [0.2678741658722593, 0.13763233878729547], 'brevity_penalty': 1.0, 'length_ratio': 2.013435700575816, 'translation_length': 1049, 'reference_length': 521}"
-ROUGE Score,"{'rouge1': 0.39661846386696303, 'rouge2': 0.27787504207037994, 'rougeL': 0.3453106665959135, 'rougeLsum': 0.35736610543121444}"
-Average Precision,0.7308604896068573
-Average Recall,0.7923247337341308
-Average F1 Score,0.7590623676776886
-Average SAS encoder Score,0.8081008174118759
-Average SAS transformer Score,0.8332552313804626
